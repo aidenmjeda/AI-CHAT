@@ -6,7 +6,7 @@ export const protect = async (req, res, next ) =>{
     let token = req.headers.authorization;
 
     try {
-       const decode = jwt.verify(token, process.env.JWT_SECRET);
+       const decoded = jwt.verify(token, process.env.JWT_SECRET);
         const userId = decoded.id;
 
 
