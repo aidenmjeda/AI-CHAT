@@ -4,9 +4,7 @@ import bcrypt from "bcryptjs";
 
 // Generate JWT
 const generateToken = (id) => {
-  return jwt.sign({ id }, process.env.JWT_SECRET, {
-    expiresIn: "30d",
-  });
+  return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: "30d" });
 };
 
 // Register a new user
@@ -19,12 +17,11 @@ export const registerUser = async (req, res) => {
       return res.json({ success: false, message: "User already exists" });
     }
 
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(password, salt);
-
-    const user = await User.create({ name, email, password: hashedPassword });
+    // No need to hash manually — the model does it
+    const user = await User.create({ name, email, password });
     const token = generateToken(user._id);
-    res.json({ success: true, token });
+
+    return res.json({ success: true, token });
   } catch (error) {
     return res.json({ success: false, message: error.message });
   }
@@ -36,12 +33,14 @@ export const loginUser = async (req, res) => {
 
   try {
     const user = await User.findOne({ email });
-    if (user && (await bcrypt.compare(password, user.password))) {
-      const token = generateToken(user._id);
-      return res.json({ success: true, token });
+    if (user) {
+      const isMatch = await bcrypt.compare(password, user.password);
+      if (isMatch) {
+        const token = generateToken(user._id);
+        return res.json({ success: true, token });
+      }
     }
-
-    return res.json({ success: false, message: "Invalid credentials" });
+    return res.json({ success: false, message: "Invalid email or password" });
   } catch (error) {
     return res.json({ success: false, message: error.message });
   }
