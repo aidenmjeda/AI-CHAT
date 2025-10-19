@@ -18,7 +18,7 @@ Check out the live demo: [coming soon](#)
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/username/AI-CHAT.git
+   git clone https://github.com/aidenmjeda/AI-CHAT.git
 
 2. Navigate to the project directory:
     cd AI-CHAT
@@ -45,11 +45,11 @@ Start the application:
 
     # Start server
     cd server
-    npm start
+    npm run dev
 
     # Start client
     cd ../client
-    npm start
+    npm run dev
 
     Open your browser at http://localhost:3000
 
@@ -59,7 +59,7 @@ Technologies Used
 
     Backend: Node.js, Express
 
-    AI & API: OpenAI API, ImageKit
+    AI & API: Gemini API, ImageKit
 
     Database (Optional): MongoDB for chat history
 
