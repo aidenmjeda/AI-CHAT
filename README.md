@@ -37,9 +37,10 @@ Set up environment variables:
 
     Server: Create a .env file in the server folder:
 
-    Gemini_API_KEY=your_openai_api_key
-    IMAGEKIT_PUBLIC_KEY=your_imagekit_public_key
-    IMAGEKIT_PRIVATE_KEY=your_imagekit_private_key
+
+JWT_SECRET = 'your_JWT_API_KEY'
+MONGODB_URI = your_mongodb_api key
+GEMINI_API_KEY = your_gemini_api_key
 
 Start the application:
 
