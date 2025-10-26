@@ -58,7 +58,11 @@ export const imageMessageController = async(req, res) => {
         //Construct the ImageKit URL
         const generatedImageURL = '${process.env.IMAGE_GENERATION_API_ENDPOINT}/ik-genimg-prompt-/${encodedPrompt}/aigpt/${Date.now()}.png?tr=w-800, h-800';
 
-        await axios.get(generatedImageURL, {responseType: 'arraybuffer'})
+        //Triger generation by fetching from ImageKit
+        const aiImageResponse = await axios.get(generatedImageURL, {responseType: 'arraybuffer'})
+
+        
+    
     } catch (error) {
         
     }
