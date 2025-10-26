@@ -31,7 +31,7 @@ await User.updateOne({_id: userId}, {$inc: {credits: -1}})
         res.json({success:false, message: error.message} )
 }
 
-
+}
 // Image Generation Message Controller
 export const imageMessageController = async(req, res) => {
     try {
@@ -54,7 +54,4 @@ export const imageMessageController = async(req, res) => {
     } catch (error) {
         
     }
-}
-
-
 }
