@@ -1,5 +1,6 @@
 import Chat from "../models/Chat.js"
 import User from "../models/User.js"
+import axios from "axios"
 //Text-based AI Chat Message Controller
 export const textMessageController = async(req, res) => {
     try {
@@ -50,7 +51,14 @@ export const imageMessageController = async(req, res) => {
             content: prompt,
              timestamp: Date.now(), 
              isImage: false
-        })
+        });
+
+        //Encode the prompt
+        const encodedPrompt = encodeURIComponent(prompt)
+        //Construct the ImageKit URL
+        const generatedImageURL = '${process.env.IMAGE_GENERATION_API_ENDPOINT}/ik-genimg-prompt-/${encodedPrompt}/aigpt/${Date.now()}.png?tr=w-800, h-800';
+
+        await axios.get(generatedImageURL, {responseType: 'arraybuffer'})
     } catch (error) {
         
     }
