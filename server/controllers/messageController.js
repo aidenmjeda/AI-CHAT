@@ -1,10 +1,15 @@
 import Chat from "../models/Chat.js"
 import User from "../models/User.js"
 import axios from "axios"
+import imagekit from "../configs/imagekit.js"
 //Text-based AI Chat Message Controller
 export const textMessageController = async(req, res) => {
     try {
         const userId = req.user._id
+        //Check credits
+          if(req.user.credits<2){
+            return res.json({success:false, message: "Not enough credits"})
+        }
         const {chatId, prompt} = req.body
 
         const chat = await Chat.findOne({userId, _id:chatId})
@@ -62,8 +67,29 @@ export const imageMessageController = async(req, res) => {
         const aiImageResponse = await axios.get(generatedImageURL, {responseType: 'arraybuffer'})
 
         
-    
-    } catch (error) {
+        //Convert to Base64
+        const base64Image = 'data:image/png;base64,${Buffer.from(aiImageResponse.data, "binary").toStrinh("base64" )}'
+        //Upload to Imagekit Media Library
+        const uploadResponse = await imagekit.upload({
+            file: base64Image,
+            fileName: 'aigpt-${Date.now()}.png',
+            folder: 'aigpt',
+        })
+
         
+const reply = {role: 'assistant', 
+    content: uploadResponse.url,
+    timestamp: Date.now(), 
+    isImage: true,
+    isPublished
+}
+res.json({success:true, reply})
+
+chat.messages.push(reply)
+await chat.save()
+await User.updateOne({_id: userId}, {$inc: {credits: -2}})
+
+    } catch (error) {
+        res.json({success:false, message: error.message})
     }
 }
