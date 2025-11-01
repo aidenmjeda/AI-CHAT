@@ -19,7 +19,7 @@ app.use(express.json());
 app.get('/', (req, res) => res.send('Server is Live'));
 app.use('/api/users', userRouter);
 app.use('/api/chat', chatRouter);
-app.use('/api/messages', messageRouter);
+app.use('/api/message', messageRouter);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
