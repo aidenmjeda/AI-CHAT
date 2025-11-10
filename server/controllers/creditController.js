@@ -1,4 +1,5 @@
 import Transaction from "../models/Transaction";
+import Stripe from 'stripe'
 const plans = [
     
     {
@@ -35,6 +36,8 @@ export const getPlans = async(req, res) =>{
         res.json({success:false, message: error.message})
     }
 }
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY)
+
 
 //API Controller for purchasing a plan
 export const purchasePlan = async(req, res) =>{
@@ -54,8 +57,29 @@ export const purchasePlan = async(req, res) =>{
             credits: plan.credits,
             isPaid: false
         })
+        const {origin} = req.headers;
+        const session = await stripe.checkout.sessions.create({
+            line_items: [
+            {
+            price_data: {
+                currency: "usd",
+                unit_amount: plan.price * 100,
+                product_data: {
+                    name: plan.name
+                }
+            },
+            quantity: 1,
+    },],
+            mode: 'payment',
+            success_url: `${origin}/loading`,
+            cancel_url: `${origin}`,
+            metadata: {transactionId: transaction._id.toString(), appId: 'aigpt'},
+            expires_at: Math.floor(Date.now() / 1000)  + 30 * 60,
+        });
+        res.json({success:true, url: session.url})
+
     } catch (error) {
-        
+        res.json({success: false, message:error.message})
     }
 
 }
