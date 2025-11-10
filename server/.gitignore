@@ -5,3 +5,7 @@ client/node_modules
 .env
 server/package-lock.json
 server/package.json
+package.json
+package-lock.json
+
+
